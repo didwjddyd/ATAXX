@@ -19,47 +19,42 @@ print_main_title()
 }
 
 #  print menu button with blue or red background
-blue_background()  #  red code = 41
+print_button()  #  red code = 41
 {
 	text="$1"
 	maxlen=$2
+	color="$3"
+
+	case $color in
+		red) echo -e [41m"\c";;
+		blue | *) echo -e [44m"\c";;
+	esac
+	
 	blank=`expr $maxlen - ${#text}`
 
-	if [ `expr ${#text} % 2` -eq 1 ]
-	then
-		for ((i=0; i!=`expr $blank / 2`; ++i))
-		do
-			echo -e [44m" \c"
-		done
-		echo -e "$text\c"
-		for ((i=0; i!=`expr $blank - $blank / 2`; ++i))
-		do
-			echo -e " \c"
-		done
-		echo -e [0m"\c"
-	else
-		for ((i=0; i!=`expr $blank / 2`; ++i))
-		do
-			echo -e [44m" \c"
-		done
-		echo -e "$text\c"
-		for ((i=0; i!=`expr $blank - $blank / 2`; ++i))
-		do
-			echo -e " \c"
-		done
-		echo -e [0m"\c" 
-	fi
+	for ((i=0; i!=`expr $blank / 2`; ++i))
+	do
+		echo -e " \c"
+	done
+	echo -e "$text\c"
+	for ((i=0; i!=`expr $blank - $blank / 2`; ++i))
+	do
+		echo -e " \c"
+	done
+	echo -e [0m"\c"
 }
 
-#  print menu button per line
-menu_line()
+two_buttons()
 {
 	text1="$1"
 	text2="$2"
-	
-	blue_background "$text1" 10
+	length=$3
+	color1="$4"
+	color2="$5"
+
+	print_button "$text1" $length $color1
 	echo -e "		\c"
-	blue_background "$text2" 10
+	print_button "$text2" $length $color2
 	echo
 }
 
@@ -90,47 +85,104 @@ input_arrow()
 				direction="D"
 			fi
 		fi
+	elif [ "$input" = "" ]
+	then
+		direction="ENTER"
 	fi
 }
 
 highlight=0  #  number of button which is highlighted
 
+main_menu_case()
+{
+	number=$1
+
+	case $number in
+		0)
+			two_buttons JOIN "SIGN IN" 10 "red" "blue"
+			echo -e "\n"
+			two_buttons EXIT "SIGN OUT" 10 "blue" "blue"
+			echo -e "\n";;
+		1)
+			two_buttons JOIN "SIGN IN" 10 "blue" "red"
+			echo -e "\n"
+			two_buttons EXIT "SIGN OUT" 10 "blue" "blue"
+			echo -e "\n";;
+		2)
+			two_buttons JOIN "SIGN IN" 10 "blue" "blue"
+			echo -e "\n"
+			two_buttons EXIT "SIGN OUT" 10 "red" "blue"
+			echo -e "\n";;
+		3)
+			two_buttons JOIN "SIGN IN" 10 "blue" "blue"
+			echo -e "\n"
+			two_buttons EXIT "SIGN OUT" 10 "blue" "red"
+			echo -e "\n";;
+		*)
+			two_buttons JOIN "SIGN IN" 10 "blue" "blue"
+			echo -e "\n"
+			two_buttons EXIT "SIGN OUT" 10 "blue" "blue"
+			echo -e "\n";;
+	esac
+}
+
 clear
 print_main_title
-menu_line JOIN "SIGN IN"
-echo -e "\n"
-menu_line EXIT "SIGN OUT"
-echo -e "\n"
+main_menu_case
 
 while true
 do
 	input_arrow
 	clear
 	print_main_title
-	case highlight in
+
+	case $highlight in
 		0)
 			if [ $direction = "B" ]
 			then
+				highlight=2
+				main_menu_case $highlight
 			elif [ $direction = "C" ]
 			then
+				highlight=1
+				main_menu_case $highlight
+			else
+				highlight=0
+				main_menu_case $highlight
 			fi;;
 		1)
 			if [ $direction = "B" ]
 			then
+				highlight=3
+				main_menu_case $highlight
 			elif [ $direction = "D" ]
 			then
+				highlight=0
+				main_menu_case $highlight
 			fi;;
-		2)
-			if [ $direction = "A" ]
+		2)  #  EXIT
+			if [ $direction = "ENTER" ]
 			then
-			elif [$direction = "C" ]
+				clear
+				exit 0
+			elif [ $direction = "A" ]
 			then
+				highlight=0
+				main_menu_case $highlight
+			elif [ $direction = "C" ]
+			then
+				highlight=3
+				main_menu_case $highlight
 			fi;;
 		3)
 			if [ $direction = "A" ]
 			then
+				highlight=1
+				main_menu_case $highlight
 			elif [ $direction = "D" ]
 			then
+				highlight=2
+				main_menu_case $highlight
 			fi;;
 	esac
 done

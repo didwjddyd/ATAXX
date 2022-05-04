@@ -1,6 +1,6 @@
 #!/bin/bash
 
-print_main_title()
+main_title()
 {
 	echo -e "\n"
 	echo '   ____   ___  ____ ___ _       _ '
@@ -18,12 +18,21 @@ print_main_title()
 	echo -e "\n\c"
 }
 
+sign_in()
+{
+	echo ' ____ ___ ____ _   _   ___ _   _ '
+	echo '/ ___|_ _/ ___| \ | | |_ _| \ | |'
+	echo '\___ \| | |  _|  \| |  | ||  \| |'
+	echo ' ___) | | |_| | |\  |  | || |\  |'
+	echo '|____/___\____|_| \_| |___|_| \_|'
+}
+
 #  print menu button with blue or red background
-print_button()  #  red code = 41
+print_button()
 {
 	text="$1"
 	maxlen=$2
-	color="$3"
+	color="$3"  #  red or blue
 
 	case $color in
 		red) echo -e [41m"\c";;
@@ -44,23 +53,9 @@ print_button()  #  red code = 41
 	echo -e [0m"\c"
 }
 
-two_buttons()
-{
-	text1="$1"
-	text2="$2"
-	length=$3
-	color1="$4"
-	color2="$5"
+key="A"  #  to return arrow or enter key from user_input()
 
-	print_button "$text1" $length $color1
-	echo -e "		\c"
-	print_button "$text2" $length $color2
-	echo
-}
-
-direction="A"  #  to return arrow direction from input_arrow()
-
-input_arrow()
+user_input()
 {
 	read -s -n 1 input
 	if [ $input = "" ]
@@ -73,116 +68,130 @@ input_arrow()
 
 			if [ $input = "A" ]  #  UP
 			then
-				direction="A"
+				key="A"
 			elif [ $input = "B" ]  #  DOWN
 			then
-				direction="B"
+				key="B"
 			elif [ $input = "C" ]  #  RIGHT
 			then
-				direction="C"
+				key="C"
 			elif [ $input = "D" ]  #  LEFT
 			then
-				direction="D"
+				key="D"
 			fi
 		fi
 	elif [ "$input" = "" ]
 	then
-		direction="ENTER"
+		key="ENTER"
 	fi
 }
 
 highlight=0  #  number of button which is highlighted
 
-main_menu_case()
+#  print main menu buttons
+main_menu()
 {
 	number=$1
 
 	case $number in
 		0)
-			two_buttons JOIN "SIGN IN" 10 "red" "blue"
+			print_button JOIN 10 "red"
+			echo -e "			\c"
+			print_button "SIGN IN" 10 "blue"
 			echo -e "\n"
-			two_buttons EXIT "SIGN OUT" 10 "blue" "blue"
+			print_button EXIT 10 "blue"
+			echo -e "			\c"
+			print_button "SIGN OUT" 10 "blue"
 			echo -e "\n";;
 		1)
-			two_buttons JOIN "SIGN IN" 10 "blue" "red"
+			print_button JOIN 10 "blue"
+			echo -e "			\c"
+			print_button "SIGN IN" 10 "red"
 			echo -e "\n"
-			two_buttons EXIT "SIGN OUT" 10 "blue" "blue"
+			print_button EXIT 10 "blue"
+			echo -e "			\c"
+			print_button "SIGN OUT" 10 "blue"
 			echo -e "\n";;
 		2)
-			two_buttons JOIN "SIGN IN" 10 "blue" "blue"
+			print_button JOIN 10 "blue"
+			echo -e "			\c"
+			print_button "SIGN IN" 10 "blue"
 			echo -e "\n"
-			two_buttons EXIT "SIGN OUT" 10 "red" "blue"
+			print_button EXIT 10 "red"
+			echo -e "			\c"
+			print_button "SIGN OUT" 10 "blue"
 			echo -e "\n";;
 		3)
-			two_buttons JOIN "SIGN IN" 10 "blue" "blue"
+			print_button JOIN 10 "blue"
+			echo -e "			\c"
+			print_button "SIGN IN" 10 "blue"
 			echo -e "\n"
-			two_buttons EXIT "SIGN OUT" 10 "blue" "red"
+			print_button ExIT 10 "blue"
+			echo -e "			\c"
+			print_button "SIGN OUT" 10 "red"
 			echo -e "\n";;
 		*)
-			two_buttons JOIN "SIGN IN" 10 "blue" "blue"
+			print_button JOIN 10 "blue"
+			echo -e "			\c"
+			print_button "SIGN IN" 10 "blue"
 			echo -e "\n"
-			two_buttons EXIT "SIGN OUT" 10 "blue" "blue"
+			print_button EXIT 10 "blue"
+			echo -e "			\c"
+			print_button "SIGN OUT" 10 "blue"
 			echo -e "\n";;
 	esac
 }
 
 clear
-print_main_title
-main_menu_case
+main_title
+main_menu
 
 while true
 do
-	input_arrow
+	user_input
 	clear
-	print_main_title
+	main_title
 
 	case $highlight in
-		0)
-			if [ $direction = "B" ]
+		0)  #  JOIN
+			if [ $key = "B" ]
 			then
 				highlight=2
-				main_menu_case $highlight
-			elif [ $direction = "C" ]
+			elif [ $key = "C" ]
 			then
 				highlight=1
-				main_menu_case $highlight
 			else
 				highlight=0
-				main_menu_case $highlight
 			fi;;
-		1)
-			if [ $direction = "B" ]
+		1)  #  SIGN IN
+			if [ $key = "B" ]
 			then
 				highlight=3
-				main_menu_case $highlight
-			elif [ $direction = "D" ]
+			elif [ $key = "D" ]
 			then
 				highlight=0
-				main_menu_case $highlight
 			fi;;
 		2)  #  EXIT
-			if [ $direction = "ENTER" ]
+			if [ $key = "ENTER" ]
 			then
 				clear
 				exit 0
-			elif [ $direction = "A" ]
+			elif [ $key = "A" ]
 			then
 				highlight=0
-				main_menu_case $highlight
-			elif [ $direction = "C" ]
+			elif [ $key = "C" ]
 			then
 				highlight=3
-				main_menu_case $highlight
 			fi;;
-		3)
-			if [ $direction = "A" ]
+		3)  #  SIGN OUT
+			if [ $key = "A" ]
 			then
 				highlight=1
-				main_menu_case $highlight
-			elif [ $direction = "D" ]
+			elif [ $key = "D" ]
 			then
 				highlight=2
-				main_menu_case $highlight
 			fi;;
 	esac
+
+	main_menu $highlight
 done

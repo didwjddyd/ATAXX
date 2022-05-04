@@ -224,6 +224,11 @@ sign_in_menu()
 	esac
 }
 
+input_mode()
+{
+	echo "input mode"
+}
+
 sign_in_page()
 {
 	highlight=0

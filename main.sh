@@ -1,5 +1,8 @@
 #!/bin/bash
 
+key="A"  #  to return arrow or enter key from user_input()
+highlight=0  #  number of button which is highlighted
+
 main_title()
 {
 	echo -e "\n"
@@ -16,15 +19,6 @@ main_title()
 	echo -e "\n\c"
 	echo '                           2019203027 양정용'
 	echo -e "\n\c"
-}
-
-sign_in()
-{
-	echo ' ____ ___ ____ _   _   ___ _   _ '
-	echo '/ ___|_ _/ ___| \ | | |_ _| \ | |'
-	echo '\___ \| | |  _|  \| |  | ||  \| |'
-	echo ' ___) | | |_| | |\  |  | || |\  |'
-	echo '|____/___\____|_| \_| |___|_| \_|'
 }
 
 #  print menu button with blue or red background
@@ -52,8 +46,6 @@ print_button()
 	done
 	echo -e [0m"\c"
 }
-
-key="A"  #  to return arrow or enter key from user_input()
 
 user_input()
 {
@@ -85,8 +77,6 @@ user_input()
 		key="ENTER"
 	fi
 }
-
-highlight=0  #  number of button which is highlighted
 
 #  print main menu buttons
 main_menu()
@@ -142,6 +132,164 @@ main_menu()
 	esac
 }
 
+sign_in_title()
+{
+	echo -e "\n"
+	echo '   ____ ___ ____ _   _   ___ _   _ '
+	echo '  / ___|_ _/ ___| \ | | |_ _| \ | |'
+	echo '  \___ \| | |  _|  \| |  | ||  \| |'
+	echo '   ___) | | |_| | |\  |  | || |\  |'
+	echo '  |____/___\____|_| \_| |___|_| \_|'
+	echo -e "\n\n"
+}
+
+sign_in_menu()
+{
+	number=$1
+
+	case $number in
+		0)
+			print_button ID 20 "red"
+			echo -e "  \c"
+			print_button "Duplicate check" 17 "blue"
+			echo -e "\n"
+			print_button PW 20 "blue"
+			echo -e "\n\n"
+			echo -e "	\c"
+			print_button "SIGN IN" 9 "blue"
+			echo -e "	\c"
+			print_button EXIT 10 "blue"
+			echo -e "\n";;
+		1)
+			print_button ID 20 "blue"
+			echo -e "  \c"
+			print_button "Duplicate check" 17 "red"
+			echo -e "\n"
+			print_button PW 20 "blue"
+			echo -e "\n\n"
+			echo -e "	\c"
+			print_button "SIGN IN" 9 "blue"
+			echo -e "	\c"
+			print_button EXIT 10 "blue"
+			echo -e "\n";;
+		2)
+			print_button ID 20 "blue"
+			echo -e "  \c"
+			print_button "Duplicate check" 17 "blue"
+			echo -e "\n"
+			print_button PW 20 "red"
+			echo -e "\n\n"
+			echo -e "	\c"
+			print_button "SIGN IN" 9 "blue"
+			echo -e "	\c"
+			print_button EXIT 10 "blue"
+			echo -e "\n";;
+		3)
+			print_button ID 20 "blue"
+			echo -e "  \c"
+			print_button "Duplicate check" 17 "blue"
+			echo -e "\n"
+			print_button PW 20 "blue"
+			echo -e "\n\n"
+			echo -e "	\c"
+			print_button "SIGN IN" 9 "red"
+			echo -e "	\c"
+			print_button EXIT 10 "blue"
+			echo -e "\n";;
+		4)
+			print_button ID 20 "blue"
+			echo -e "  \c"
+			print_button "Duplicate check" 17 "blue"
+			echo -e "\n"
+			print_button PW 20 "blue"
+			echo -e "\n\n"
+			echo -e "	\c"
+			print_button "SIGN IN" 9 "blue"
+			echo -e "	\c"
+			print_button EXIT 10 "red"
+			echo -e "\n";;
+		*)
+			print_button ID 20 "blue"
+			echo -e "  \c"
+			print_button "Duplicate check" 17 "blue"
+			echo -e "\n"
+			print_button PW 20 "blue"
+			echo -e "\n\n"
+			echo -e "	\c"
+			print_button "SIGN IN" 9 "blue"
+			echo -e "	\c"
+			print_button EXIT 10 "blue"
+			echo -e "\n";;
+
+	esac
+}
+
+sign_in_page()
+{
+	highlight=0
+	clear
+	sign_in_title
+	sign_in_menu
+
+	while true
+	do
+		user_input
+		clear
+		sign_in_title
+
+		case $highlight in
+			0)  #  ID
+				if [ $key = "B" ]
+				then
+					highlight=2
+				elif [ $key = "C" ]
+				then
+					highlight=1
+				else
+					highlight=0
+				fi;;
+			1)  #  Duplicate check
+				if [ $key = "B" ]
+				then
+					highlight=2
+				elif [ $key = "D" ]
+				then
+					highlight=0
+				fi;;
+			2)  #  PW
+				if [ $key = "A" ]
+				then
+					highlight=0
+				elif [ $key = "B" ]
+				then
+					highlight=3
+				fi;;
+			3)  #  SIGN IN
+				if [ $key = "A" ]
+				then
+					highlight=2
+				elif [ $key = "C" ]
+				then
+					highlight=4
+				fi;;
+			4)  #  EXiT
+				if [ $key = "ENTER" ]
+				then
+					clear
+					exit 0
+				elif [ $key = "A" ]
+				then
+					highlight=2
+				elif [ $key = "D" ]
+				then
+					highlight=3
+				fi;;
+		esac
+
+		sign_in_menu $highlight
+	done
+}
+
 clear
 main_title
 main_menu
@@ -164,7 +312,10 @@ do
 				highlight=0
 			fi;;
 		1)  #  SIGN IN
-			if [ $key = "B" ]
+			if [ $key = "ENTER" ]
+			then
+				sign_in_page
+			elif [ $key = "B" ]
 			then
 				highlight=3
 			elif [ $key = "D" ]

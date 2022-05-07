@@ -143,13 +143,15 @@ sign_in_title()
 	echo -e "\n\n"
 }
 
+id="ID"  #  use for show user input id
+
 sign_in_menu()
 {
 	number=$1
 
 	case $number in
 		0)
-			print_button ID 20 "red"
+			print_button $id 20 "red"
 			echo -e "  \c"
 			print_button "Duplicate check" 17 "blue"
 			echo -e "\n"
@@ -161,7 +163,7 @@ sign_in_menu()
 			print_button EXIT 10 "blue"
 			echo -e "\n";;
 		1)
-			print_button ID 20 "blue"
+			print_button $id 20 "blue"
 			echo -e "  \c"
 			print_button "Duplicate check" 17 "red"
 			echo -e "\n"
@@ -173,7 +175,7 @@ sign_in_menu()
 			print_button EXIT 10 "blue"
 			echo -e "\n";;
 		2)
-			print_button ID 20 "blue"
+			print_button $id 20 "blue"
 			echo -e "  \c"
 			print_button "Duplicate check" 17 "blue"
 			echo -e "\n"
@@ -185,7 +187,7 @@ sign_in_menu()
 			print_button EXIT 10 "blue"
 			echo -e "\n";;
 		3)
-			print_button ID 20 "blue"
+			print_button $id 20 "blue"
 			echo -e "  \c"
 			print_button "Duplicate check" 17 "blue"
 			echo -e "\n"
@@ -197,7 +199,7 @@ sign_in_menu()
 			print_button EXIT 10 "blue"
 			echo -e "\n";;
 		4)
-			print_button ID 20 "blue"
+			print_button $id 20 "blue"
 			echo -e "  \c"
 			print_button "Duplicate check" 17 "blue"
 			echo -e "\n"
@@ -224,9 +226,25 @@ sign_in_menu()
 	esac
 }
 
-input_mode()
+id_input_mode()
 {
-	echo "input mode"
+	#  input mode initialize
+	clear
+	sign_in_title
+	sign_in_menu 0
+	
+	#  move cursor to ID button to input id
+	tput cup 10
+	print_button "" 20 "red"
+	tput cup 10 1
+
+	#  input id	
+	echo -e [41m"\c"   
+	read id
+	echo -e [0m"\c"
+
+	#  move cursor to ID button to reprint menu buttons
+	tput cup 10
 }
 
 sign_in_page()
@@ -244,7 +262,11 @@ sign_in_page()
 
 		case $highlight in
 			0)  #  ID
-				if [ $key = "B" ]
+				if [ $key = "ENTER" ]
+				then
+					id_input_mode
+					highlight=0
+				elif [ $key = "B" ]
 				then
 					highlight=2
 				elif [ $key = "C" ]
@@ -295,59 +317,65 @@ sign_in_page()
 	done
 }
 
-clear
-main_title
-main_menu
-
-while true
-do
-	user_input
+main()
+{
 	clear
 	main_title
+	main_menu
 
-	case $highlight in
-		0)  #  JOIN
-			if [ $key = "B" ]
-			then
-				highlight=2
-			elif [ $key = "C" ]
-			then
-				highlight=1
-			else
-				highlight=0
-			fi;;
-		1)  #  SIGN IN
-			if [ $key = "ENTER" ]
-			then
-				sign_in_page
-			elif [ $key = "B" ]
-			then
-				highlight=3
-			elif [ $key = "D" ]
-			then
-				highlight=0
-			fi;;
-		2)  #  EXIT
-			if [ $key = "ENTER" ]
-			then
-				clear
-				exit 0
-			elif [ $key = "A" ]
-			then
-				highlight=0
-			elif [ $key = "C" ]
-			then
-				highlight=3
-			fi;;
-		3)  #  SIGN OUT
-			if [ $key = "A" ]
-			then
-				highlight=1
-			elif [ $key = "D" ]
-			then
-				highlight=2
-			fi;;
-	esac
+	while true
+	do
+		user_input
+		clear
+		main_title
+	
+		case $highlight in
+			0)  #  JOIN
+				if [ $key = "B" ]
+				then
+					highlight=2
+				elif [ $key = "C" ]
+				then
+					highlight=1
+				else
+					highlight=0
+				fi;;
+			1)  #  SIGN IN
+				if [ $key = "ENTER" ]
+				then
+					sign_in_page
+				elif [ $key = "B" ]
+				then
+					highlight=3
+				elif [ $key = "D" ]
+				then
+					highlight=0
+				fi;;
+			2)  #  EXIT
+				if [ $key = "ENTER" ]
+				then
+					clear
+					exit 0
+				elif [ $key = "A" ]
+				then
+					highlight=0
+				elif [ $key = "C" ]
+				then
+					highlight=3
+				fi;;
+			3)  #  SIGN OUT
+				if [ $key = "A" ]
+				then
+					highlight=1
+				elif [ $key = "D" ]
+				then
+					highlight=2
+				fi;;
+		esac
+	
+		main_menu $highlight
+	done
+}
 
-	main_menu $highlight
-done
+#  start main function
+main

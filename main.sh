@@ -264,9 +264,26 @@ info_input_mode()
 #  record id, pw, win, loss in file
 record_info()
 {
-	if [ -z `ls "$1"` ]
+
+	if [ ! -s "$1" ]
 	then
 		echo "$1 $2 0 0" > "$1"
+	fi
+
+	sign_in_menu 3
+}
+
+check_duplicate()
+{
+	clear
+	sign_in_title
+	sign_in_menu 1 
+
+	if [ -s "$1" ]
+	then
+		echo "Same ID is exist"
+	else
+		echo "Can sign in"
 	fi
 }
 
@@ -302,6 +319,7 @@ sign_in_page()
 				if [ $key = "ENTER" ]
 				then
 					check_duplicate $id
+					exit 0
 				elif [ $key = "B" ]
 				then
 					highlight=2
@@ -325,7 +343,6 @@ sign_in_page()
 				if [ $key = "ENTER" ]
 				then
 					record_info $id $pw
-					clear
 					exit 0
 				elif [ $key = "A" ]
 				then
@@ -337,7 +354,6 @@ sign_in_page()
 			4)  #  EXiT
 				if [ $key = "ENTER" ]
 				then
-					clear
 					exit 0
 				elif [ $key = "A" ]
 				then
@@ -389,7 +405,6 @@ main()
 			2)  #  EXIT
 				if [ $key = "ENTER" ]
 				then
-					clear
 					exit 0
 				elif [ $key = "A" ]
 				then

@@ -144,6 +144,7 @@ sign_in_title()
 }
 
 id="ID"  #  use for show user input id
+pw="PW"  #  use for show user input pw
 
 sign_in_menu()
 {
@@ -155,7 +156,7 @@ sign_in_menu()
 			echo -e "  \c"
 			print_button "Duplicate check" 17 "blue"
 			echo -e "\n"
-			print_button PW 20 "blue"
+			print_button $pw 20 "blue"
 			echo -e "\n\n"
 			echo -e "	\c"
 			print_button "SIGN IN" 9 "blue"
@@ -167,7 +168,7 @@ sign_in_menu()
 			echo -e "  \c"
 			print_button "Duplicate check" 17 "red"
 			echo -e "\n"
-			print_button PW 20 "blue"
+			print_button $pw 20 "blue"
 			echo -e "\n\n"
 			echo -e "	\c"
 			print_button "SIGN IN" 9 "blue"
@@ -179,7 +180,7 @@ sign_in_menu()
 			echo -e "  \c"
 			print_button "Duplicate check" 17 "blue"
 			echo -e "\n"
-			print_button PW 20 "red"
+			print_button $pw 20 "red"
 			echo -e "\n\n"
 			echo -e "	\c"
 			print_button "SIGN IN" 9 "blue"
@@ -191,7 +192,7 @@ sign_in_menu()
 			echo -e "  \c"
 			print_button "Duplicate check" 17 "blue"
 			echo -e "\n"
-			print_button PW 20 "blue"
+			print_button $pw 20 "blue"
 			echo -e "\n\n"
 			echo -e "	\c"
 			print_button "SIGN IN" 9 "red"
@@ -203,7 +204,7 @@ sign_in_menu()
 			echo -e "  \c"
 			print_button "Duplicate check" 17 "blue"
 			echo -e "\n"
-			print_button PW 20 "blue"
+			print_button $pw 20 "blue"
 			echo -e "\n\n"
 			echo -e "	\c"
 			print_button "SIGN IN" 9 "blue"
@@ -226,25 +227,47 @@ sign_in_menu()
 	esac
 }
 
-id_input_mode()
+#  input id and pw and reprint menu buttons
+info_input_mode()
 {
 	#  input mode initialize
 	clear
 	sign_in_title
-	sign_in_menu 0
-	
-	#  move cursor to ID button to input id
-	tput cup 10
-	print_button "" 20 "red"
-	tput cup 10 1
+	sign_in_menu $highlight
 
-	#  input id	
+	case $1 in
+	ID)
+		line=10;;
+	PW)
+		line=12;;
+	esac
+
+	#  move cursor to ID or PW button to input id
+	tput cup $line
+	print_button "" 20 "red"
+	tput cup $line 1
+
+	#  input id or pw
 	echo -e [41m"\c"   
-	read id
+	case $1 in
+	ID)
+		read id;;
+	PW)
+		read pw;;
+	esac
 	echo -e [0m"\c"
 
-	#  move cursor to ID button to reprint menu buttons
+	#  move cursor to start of menu to reprint
 	tput cup 10
+}
+
+#  record id, pw, win, loss in file
+record_info()
+{
+	if [ -z `ls "$1"` ]
+	then
+		echo "$1 $2 0 0" > "$1"
+	fi
 }
 
 sign_in_page()
@@ -264,7 +287,7 @@ sign_in_page()
 			0)  #  ID
 				if [ $key = "ENTER" ]
 				then
-					id_input_mode
+					info_input_mode "ID"
 					highlight=0
 				elif [ $key = "B" ]
 				then
@@ -276,7 +299,10 @@ sign_in_page()
 					highlight=0
 				fi;;
 			1)  #  Duplicate check
-				if [ $key = "B" ]
+				if [ $key = "ENTER" ]
+				then
+					check_duplicate $id
+				elif [ $key = "B" ]
 				then
 					highlight=2
 				elif [ $key = "D" ]
@@ -284,7 +310,11 @@ sign_in_page()
 					highlight=0
 				fi;;
 			2)  #  PW
-				if [ $key = "A" ]
+				if [ $key = "ENTER" ]
+				then
+					info_input_mode "PW"
+					highlight=2
+				elif [ $key = "A" ]
 				then
 					highlight=0
 				elif [ $key = "B" ]
@@ -292,7 +322,12 @@ sign_in_page()
 					highlight=3
 				fi;;
 			3)  #  SIGN IN
-				if [ $key = "A" ]
+				if [ $key = "ENTER" ]
+				then
+					record_info $id $pw
+					clear
+					exit 0
+				elif [ $key = "A" ]
 				then
 					highlight=2
 				elif [ $key = "C" ]

@@ -229,30 +229,32 @@ sign_in_menu()
 #  input id and pw and reprint menu buttons
 info_input_mode()
 {
-	#  input mode initialize
-	clear
-	sign_in_title
-	sign_in_menu $highlight
-
 	case $1 in
-	ID)
-		line=10;;
-	PW)
-		line=12;;
+		ID)
+			line=10;;
+		PW)
+			line=12;;
 	esac
 
-	#  move cursor to ID or PW button to input id
-	tput cup $line
-	print_button "" 20 "red"
-	tput cup $line 1
+	#  move cursor to ID or PW button to input
+	case $2 in
+		IN)
+			tput cup $line
+			print_button "" 20 "red"
+			tput cup $line 1;;
+		OUT)
+			tput cup $line 11
+			print_button "" 20 "red"
+			tput cup $line 12;;
+	esac
 
 	#  input id or pw
 	echo -e [41m"\c"   
 	case $1 in
-	ID)
-		read id;;
-	PW)
-		read pw;;
+		ID)
+			read id;;
+		PW)
+			read pw;;
 	esac
 	echo -e [0m"\c"
 
@@ -268,8 +270,6 @@ record_info()
 	then
 		echo "$1 $2 0 0" > "$1"
 	fi
-
-	sign_in_menu 3
 }
 
 check_duplicate()
@@ -303,7 +303,7 @@ sign_in_page()
 			0)  #  ID
 				if [ $key = "ENTER" ]
 				then
-					info_input_mode "ID"
+					info_input_mode "ID" "IN"
 					highlight=0
 				elif [ $key = "B" ]
 				then
@@ -317,6 +317,9 @@ sign_in_page()
 			1)  #  Duplicate check
 				if [ $key = "ENTER" ]
 				then
+					clear
+					sign_in_title
+					sign_in_menu $highlight
 					check_duplicate $id
 					exit 0
 				elif [ $key = "B" ]
@@ -329,7 +332,10 @@ sign_in_page()
 			2)  #  PW
 				if [ $key = "ENTER" ]
 				then
-					info_input_mode "PW"
+					clear
+					sign_in_title
+					sign_in_menu $highlight
+					info_input_mode "PW" "IN"
 					highlight=2
 				elif [ $key = "A" ]
 				then
@@ -342,6 +348,7 @@ sign_in_page()
 				if [ $key = "ENTER" ]
 				then
 					record_info $id $pw
+					sign_in_menu $highlight
 					exit 0
 				elif [ $key = "A" ]
 				then
@@ -447,6 +454,11 @@ sign_out_menu()
 	esac
 }
 
+delete_record()
+{
+	echo "record"
+}
+
 sign_out_page()
 {
 	highlight=0
@@ -464,7 +476,10 @@ sign_out_page()
 			0)  #  ID
 				if [ $key = "ENTER" ]
 				then
-					info_input_mode "ID"
+					clear
+					sign_out_title
+					sign_out_menu $highlight
+					info_input_mode "ID" "OUT"
 					highlight=0
 				elif [ $key = "B" ]
 				then
@@ -475,7 +490,10 @@ sign_out_page()
 			1)  #  PW 
 				if [ $key = "ENTER" ]
 				then
-					info_input_mode "PW"
+					clear
+					sign_out_title
+					sign_out_menu $highlight
+					info_input_mode "PW" "OUT"
 				elif [ $key = "A" ]
 				then
 					highlight=0

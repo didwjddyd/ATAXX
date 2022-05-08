@@ -2,6 +2,8 @@
 
 key="A"  #  to return arrow or enter key from user_input()
 highlight=0  #  number of button which is highlighted
+id="ID"  #  use for show user input id
+pw="PW"  #  use for show user input pw
 
 main_title()
 {
@@ -142,9 +144,6 @@ sign_in_title()
 	echo '  |____/___\____|_| \_| |___|_| \_|'
 	echo -e "\n\n"
 }
-
-id="ID"  #  use for show user input id
-pw="PW"  #  use for show user input pw
 
 sign_in_menu()
 {
@@ -354,6 +353,7 @@ sign_in_page()
 			4)  #  EXiT
 				if [ $key = "ENTER" ]
 				then
+					sign_in_menu 4
 					exit 0
 				elif [ $key = "A" ]
 				then
@@ -366,6 +366,150 @@ sign_in_page()
 
 		sign_in_menu $highlight
 	done
+}
+
+sign_out_title()
+{
+	echo -e "\n"
+	echo '   ____ ___ ____ _   _    ___  _   _ _____ '
+	echo '  / ___|_ _/ ___| \ | |  / _ \| | | |_   _|'
+	echo '  \___ \| | |  _|  \| | | | | | | | | | |  '
+	echo '   ___) | | |_| | |\  | | |_| | |_| | | |  '
+	echo '  |____/___\____|_| \_|  \___/ \___/  |_|  '
+	echo -e "\n\n"
+}
+
+sign_out_menu()
+{
+	number=$1
+
+	case $number in
+		0)
+			echo -e "	   \c"
+			print_button $id 20 "red"
+			echo -e "\n"
+			echo -e "	   \c"
+			print_button $pw 20 "blue"
+			echo -e "\n\n\n"
+			echo -e "	 \c"
+			print_button "SIGN OUT" 10 "blue"
+			echo -e "	\c"
+			print_button "EXIT" 10 "blue"
+			echo -e "\n";;
+		1)
+			echo -e "	   \c"
+			print_button $id 20 "blue"
+			echo -e "\n"
+			echo -e "	   \c"
+			print_button $pw 20 "red"
+			echo -e "\n\n\n"
+			echo -e "	 \c"
+			print_button "SIGN OUT" 10 "blue"
+			echo -e "	\c"
+			print_button "EXIT" 10 "blue"
+			echo -e "\n";;
+		2)
+			echo -e "	   \c"
+			print_button $id 20 "blue"
+			echo -e "\n"
+			echo -e "	   \c"
+			print_button $pw 20 "blue"
+			echo -e "\n\n\n"
+			echo -e "	 \c"
+			print_button "SIGN OUT" 10 "red"
+			echo -e "	\c"
+			print_button "EXIT" 10 "blue"
+			echo -e "\n";;
+		3)
+			echo -e "	   \c"
+			print_button $id 20 "blue"
+			echo -e "\n"
+			echo -e "	   \c"
+			print_button $pw 20 "blue"
+			echo -e "\n\n\n"
+			echo -e "	 \c"
+			print_button "SIGN OUT" 10 "blue"
+			echo -e "	\c"
+			print_button "EXIT" 10 "red"
+			echo -e "\n";;
+		*)
+			echo -e "	   \c"
+			print_button $id 20 "blue"
+			echo -e "\n"
+			echo -e "	   \c"
+			print_button $pw 20 "blue"
+			echo -e "\n\n\n"
+			echo -e "	 \c"
+			print_button "SIGN OUT" 10 "blue"
+			echo -e "	\c"
+			print_button "EXIT" 10 "blue"
+			echo -e "\n";;
+	esac
+}
+
+sign_out_page()
+{
+	highlight=0
+	clear
+	sign_out_title
+	sign_out_menu
+
+	while true
+	do
+		user_input
+		clear
+		sign_out_title
+
+		case $highlight in
+			0)  #  ID
+				if [ $key = "ENTER" ]
+				then
+					info_input_mode "ID"
+					highlight=0
+				elif [ $key = "B" ]
+				then
+					highlight=1
+				else
+					highlight=0
+				fi;;
+			1)  #  PW 
+				if [ $key = "ENTER" ]
+				then
+					info_input_mode "PW"
+				elif [ $key = "A" ]
+				then
+					highlight=0
+				elif [ $key = "B" ]
+				then
+					highlight=2
+				fi;;
+			2)  #  SIGN OUT 
+				if [ $key = "ENTER" ]
+				then
+					exit 0
+				elif [ $key = "A" ]
+				then
+					highlight=1
+				elif [ $key = "C" ]
+				then
+					highlight=3
+				fi;;
+			3)  #  EXIT 
+				if [ $key = "ENTER" ]
+				then
+					sign_out_menu 3
+					exit 0
+				elif [ $key = "A" ]
+				then
+					highlight=1
+				elif [ $key = "D" ]
+				then
+					highlight=2
+				fi;;
+		esac
+
+		sign_out_menu $highlight
+	done	
 }
 
 main()
@@ -405,6 +549,7 @@ main()
 			2)  #  EXIT
 				if [ $key = "ENTER" ]
 				then
+					main_menu 2
 					exit 0
 				elif [ $key = "A" ]
 				then
@@ -414,7 +559,10 @@ main()
 					highlight=3
 				fi;;
 			3)  #  SIGN OUT
-				if [ $key = "A" ]
+				if [ $key = "ENTER" ]
+				then
+					sign_out_page
+				elif [ $key = "A" ]
 				then
 					highlight=1
 				elif [ $key = "D" ]

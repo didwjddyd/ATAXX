@@ -4,6 +4,8 @@ key="A"  #  to return arrow or enter key from user_input()
 highlight=0  #  number of button which is highlighted
 id="ID"  #  use for show user input id
 pw="PW"  #  use for show user input pw
+player=1
+idp1="IDP1"
 
 main_title()
 {
@@ -306,6 +308,9 @@ sign_in_page()
 			0)  #  ID
 				if [ $key = "ENTER" ]
 				then
+					clear
+					sign_in_title
+					sign_in_menu $highlight
 					info_input_mode "ID" "IN"
 					highlight=0
 				elif [ $key = "B" ]
@@ -638,10 +643,47 @@ join_menu()
 	esac
 }
 
+log_in()
+{
+	case $player in
+		1)
+			if [ -s "$1" ] && [ `head -1 "$1"` = "$1" ] && [ `head -2 "$1"|tail -1` = "$2" ]
+			then
+				idp1="$1"
+				id="ID"
+				pw="PW"
+				player=2
+				join_page
+			fi;;
+		2)
+			if [ "$1" != "$idp1" ]
+			then
+				if [ -s "$1" ] && [ `head -1 "$1"` = "$1" ] && [ `head -2 "$1"|tail -1` = "$2" ]
+				then
+					clear
+					print_success
+					exit 0
+				fi
+			fi
+			join_menu $highlight
+			exit 0;;
+	esac
+}
+
+print_success()
+{
+	echo -e "\n\n\n\n"
+	echo '   ____  _   _  ____ ____ _____ ____ ____  '
+	echo '  / ___|| | | |/ ___/ ___| ____/ ___/ ___| '
+	echo '  \___ \| | | | |  | |   |  _| \___ \___ \ '
+	echo '   ___) | |_| | |__| |___| |___ ___) |__) |'
+	echo '  |____/ \___/ \____\____|_____|____/____/ '
+	echo -e "\n\n\n\n"
+}
+
 join_page()
 {
 	highlight=0
-	player=1
 	clear
 	join_title $player
 	join_menu
@@ -682,10 +724,10 @@ join_page()
 				then
 					highlight=2
 				fi;;
-			2)
+			2)  #  LOGIN
 				if [ $key = "ENTER" ] 
 				then
-					exit 0
+					log_in $id $pw
 				elif [ $key = "A" ]
 				then
 					highlight=1
@@ -693,7 +735,7 @@ join_page()
 				then
 					highlight=3
 				fi;;
-			3)
+			3)  #  EXIT
 				if [ $key = "ENTER" ]
 				then
 					join_menu $highlight

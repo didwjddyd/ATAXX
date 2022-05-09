@@ -268,7 +268,10 @@ record_info()
 
 	if [ ! -s "$1" ]
 	then
-		echo "$1 $2 0 0" > "$1"
+		echo "$1" > "$1"
+		echo "$2" >> "$1"
+		echo "0" >> "$1"
+		echo "0" >> "$1"
 	fi
 }
 
@@ -456,7 +459,10 @@ sign_out_menu()
 
 delete_record()
 {
-	echo "record"
+	if [ -s "$id" ] && [ `head -2 $id|tail -1` = "$pw" ]
+	then
+		rm -rf "$id"
+	fi
 }
 
 sign_out_page()
@@ -504,6 +510,8 @@ sign_out_page()
 			2)  #  SIGN OUT 
 				if [ $key = "ENTER" ]
 				then
+					delete_record $id $pw
+					sign_out_menu $highlight
 					exit 0
 				elif [ $key = "A" ]
 				then

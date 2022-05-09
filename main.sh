@@ -523,7 +523,7 @@ sign_out_page()
 			3)  #  EXIT 
 				if [ $key = "ENTER" ]
 				then
-					sign_out_menu 3
+					sign_out_menu $highlight
 					exit 0
 				elif [ $key = "A" ]
 				then
@@ -536,6 +536,179 @@ sign_out_page()
 
 		sign_out_menu $highlight
 	done	
+}
+
+join_title_1p()
+{
+	echo -e "\n"
+	echo '    _ ____    _     ___   ____ ___ _   _ '
+	echo '   / |  _ \  | |   / _ \ / ___|_ _| \ | |'
+	echo '   | | |_) | | |  | | | | |  _ | ||  \| |'
+	echo '   | |  __/  | |__| |_| | |_| || || |\  |'
+	echo '   |_|_|     |_____\___/ \____|___|_| \_|'
+	echo -e "\n\n"
+}
+
+join_title_2p()
+{
+	echo -e "\n"
+	echo ' ____  ____    _     ___   ____ ___ _   _ '
+	echo '|___ \|  _ \  | |   / _ \ / ___|_ _| \ | |'
+	echo '  __) | |_) | | |  | | | | |  _ | ||  \| |'
+	echo ' / __/|  __/  | |__| |_| | |_| || || |\  |'
+	echo '|_____|_|     |_____\___/ \____|___|_| \_|'
+	echo -e "\n\n"
+}
+
+join_title()
+{
+	case $1 in
+		1)
+			join_title_1p;;
+		2)
+			join_title_2p;;
+	esac
+}
+
+join_menu()
+{
+	number=$1
+
+	case $number in
+		0)
+			echo -e "	   \c"
+			print_button $id 20 "red"
+			echo -e "\n"
+			echo -e "	   \c"
+			print_button $pw 20 "blue"
+			echo -e "\n\n\n"
+			echo -e "	 \c"
+			print_button "LOGIN" 10 "blue"
+			echo -e "	\c"
+			print_button "EXIT" 10 "blue"
+			echo -e "\n";;
+		1)
+			echo -e "	   \c"
+			print_button $id 20 "blue"
+			echo -e "\n"
+			echo -e "	   \c"
+			print_button $pw 20 "red"
+			echo -e "\n\n\n"
+			echo -e "	 \c"
+			print_button "LOGIN" 10 "blue"
+			echo -e "	\c"
+			print_button "EXIT" 10 "blue"
+			echo -e "\n";;
+		2)
+			echo -e "	   \c"
+			print_button $id 20 "blue"
+			echo -e "\n"
+			echo -e "	   \c"
+			print_button $pw 20 "blue"
+			echo -e "\n\n\n"
+			echo -e "	 \c"
+			print_button "LOGIN" 10 "red"
+			echo -e "	\c"
+			print_button "EXIT" 10 "blue"
+			echo -e "\n";;
+		3)
+			echo -e "	   \c"
+			print_button $id 20 "blue"
+			echo -e "\n"
+			echo -e "	   \c"
+			print_button $pw 20 "blue"
+			echo -e "\n\n\n"
+			echo -e "	 \c"
+			print_button "LOGIN" 10 "blue"
+			echo -e "	\c"
+			print_button "EXIT" 10 "red"
+			echo -e "\n";;
+		*)
+			echo -e "	   \c"
+			print_button $id 20 "blue"
+			echo -e "\n"
+			echo -e "	   \c"
+			print_button $pw 20 "blue"
+			echo -e "\n\n\n"
+			echo -e "	 \c"
+			print_button "LOGIN" 10 "blue"
+			echo -e "	\c"
+			print_button "EXIT" 10 "blue"
+			echo -e "\n";;
+	esac
+}
+
+join_page()
+{
+	highlight=0
+	player=1
+	clear
+	join_title $player
+	join_menu
+	
+	while true
+	do
+		user_input
+		clear		
+		join_title $player
+
+		case $highlight in
+			0)  #  ID
+				if [ $key = "ENTER" ]
+				then
+					clear
+					join_title $player
+					join_menu $highlight
+					info_input_mode "ID" "OUT"
+					highlight=0
+				elif [ $key = "B" ]
+				then
+					highlight=1
+				else
+					highlight=0
+				fi;;
+			1)  #  PW
+				if [ $key = "ENTER" ]
+				then
+					clear
+					join_title $player
+					join_menu $highlight
+					info_input_mode "PW" "OUT"
+					highlight=1
+				elif [ $key = "A" ]
+				then
+					highlight=0
+				elif [ $key = "B" ]
+				then
+					highlight=2
+				fi;;
+			2)
+				if [ $key = "ENTER" ] 
+				then
+					exit 0
+				elif [ $key = "A" ]
+				then
+					highlight=1
+				elif [ $key = "C" ]
+				then
+					highlight=3
+				fi;;
+			3)
+				if [ $key = "ENTER" ]
+				then
+					join_menu $highlight
+					exit 0
+				elif [ $key = "A" ]
+				then
+					highlight=1
+				elif [ $key = "D" ]
+				then
+					highlight=2
+				fi;;
+		esac
+
+		join_menu $highlight
+	done
 }
 
 main()
@@ -552,7 +725,10 @@ main()
 	
 		case $highlight in
 			0)  #  JOIN
-				if [ $key = "B" ]
+				if [ $key = "ENTER" ]
+				then
+					join_page
+				elif [ $key = "B" ]
 				then
 					highlight=2
 				elif [ $key = "C" ]

@@ -4,10 +4,10 @@ key="A"  #  to return arrow or enter key from user_input()
 highlight=0  #  number of button which is highlighted
 id="ID"  #  use for show user input id
 pw="PW"  #  use for show user input pw
-islogin1="false"  #  check player1 logs in successfully
-islogin2="false"  #  check player2 logs in successfully
-idp1="1P LOGIN"  #  use for show player1's id
-idp2="2P LOGIN"  #  use for show player2's id
+islogin1="true"  #  check player1 logs in successfully
+islogin2="true"  #  check player2 logs in successfully
+idp1="comso1"  #  use for show player1's id
+idp2="comso2"  #  use for show player2's id
 player=0
 
 main_title()
@@ -33,9 +33,11 @@ print_button()
 {
 	text="$1"
 	maxlen=$2
-	color="$3"  #  red or blue
+	color="$3"  #  red, blue, yellow, white
 
 	case $color in
+		yellow) echo -e [103m"\c";;
+		white) echo -e [107m"\c";;
 		red) echo -e [41m"\c";;
 		blue | *) echo -e [44m"\c";;
 	esac
@@ -831,11 +833,77 @@ lobby_title()
 	echo -e "\n"
 }
 
+make_blank()
+{
+	text="$1"
+	blank=`expr $2 - ${#text}`
+
+	for ((i=0; i!=$blank; ++i))
+	do
+		echo -e " \c"
+	done
+}
+
 lobby_menu()
 {
 	case $1 in
+		0)
+			echo -e "ID : $idp1\c"
+			make_blank "$idp1" 31
+			echo "ID : $idp2"
+
+			echo -e "WIN : `head -3 $idp1|tail -1`\c"
+			make_blank `head -3 $idp1|tail -1` 30
+			echo "WIN : `head -3 $idp2|tail -1`"
+			
+			echo -e "LOSE : `tail -1 $idp1`\c"
+			make_blank `tail -1 $idp1` 29
+			echo "LOSE : `tail -1 $idp2`"
+			echo -e "\n\n"
+
+			echo -e "          \c"
+			print_button "START" 9 "red"
+			echo -e "          \c"
+			print_button "EXIT" 10 "blue"
+			echo -e "\n";;
+		1)
+			echo -e "ID : $idp1\c"
+			make_blank "$idp1" 31
+			echo "ID : $idp2"
+
+			echo -e "WIN : `head -3 $idp1|tail -1`\c"
+			make_blank `head -3 $idp1|tail -1` 30
+			echo "WIN : `head -3 $idp2|tail -1`"
+			
+			echo -e "LOSE : `tail -1 $idp1`\c"
+			make_blank `tail -1 $idp1` 29
+			echo "LOSE : `tail -1 $idp2`"
+			echo -e "\n\n"
+
+			echo -e "          \c"
+			print_button "START" 9 "blue"
+			echo -e "          \c"
+			print_button "EXIT" 10 "red"
+			echo -e "\n";;
 		*)
-			echo "ID : $idp1"
+			echo -e "ID : $idp1\c"
+			make_blank "$idp1" 31
+			echo "ID : $idp2"
+
+			echo -e "WIN : `head -3 $idp1|tail -1`\c"
+			make_blank `head -3 $idp1|tail -1` 30
+			echo "WIN : `head -3 $idp2|tail -1`"
+			
+			echo -e "LOSE : `tail -1 $idp1`\c"
+			make_blank `tail -1 $idp1` 29
+			echo "LOSE : `tail -1 $idp2`"
+			echo -e "\n\n"
+
+			echo -e "          \c"
+			print_button "START" 9 "blue"
+			echo -e "          \c"
+			print_button "EXIT" 10 "blue"
+			echo -e "\n";;
 	esac
 }
 
@@ -861,7 +929,7 @@ lobby_page()
 			0)  #  START
 				if [ $key = "ENTER" ]
 				then
-					echo "game start"
+					map_select_page
 				elif [ $key = "C" ]
 				then
 					highlight=1
@@ -876,7 +944,173 @@ lobby_page()
 					highlight=0
 				fi;;
 		esac
+
+		lobby_menu $highlight
 	done
+}
+
+map_select_title()
+{
+	echo '               _  _____  _     __  ____  __'
+	echo '              / \|_   _|/ \    \ \/ /\ \/ /'
+	echo '             / _ \ | | / _ \    \  /  \  / '
+	echo '            / ___ \| |/ ___ \   /  \  /  \ '
+	echo '           /_/   \_\_/_/   \_\ /_/\_\/_/\_\'
+	
+	echo ' __  __    _    ____    ____  _____ _     _____ ____ _____ '
+	echo '|  \/  |  / \  |  _ \  / ___|| ____| |   | ____/ ___|_   _|'
+	echo '| |\/| | / _ \ | |_) | \___ \|  _| | |   |  _|| |     | |  '
+	echo '| |  | |/ ___ \|  __/   ___) | |___| |___| |__| |___  | |  '
+	echo '|_|  |_/_/   \_\_|     |____/|_____|_____|_____\____| |_|  '
+
+	echo -e "\n\n"
+}
+
+map_template_1()
+{
+	echo ' _______________ '
+	echo '|_|_|_|_|_|_|_|_|'
+	echo '|_|_|_|_|_|_|_|_|'
+	echo '|_|_|_|_|_|_|_|_|'
+	echo '|_|_|_|_|_|_|_|_|'
+	echo '|_|_|_|_|_|_|_|_|'
+	echo '|_|_|_|_|_|_|_|_|'
+	echo '|_|_|_|_|_|_|_|_|'
+	echo '|_|_|_|_|_|_|_|_|'
+}
+
+map_template_2()
+{
+	tput cup 13 36
+	echo ' _______________ '
+	tput cup 14 36
+	echo '|_|_|_|_|_|_|_|_|'
+	
+	tput cup 15 36
+	echo -e "|_|\c"
+	print_button "_" 1 "yellow"
+	echo -e "|_|_|_|_|\c"
+	print_button "_" 1 "yellow"
+	echo "|_|"
+
+	tput cup 16 36
+	echo -e "|_|_|\c"
+	print_button "_" 1 "yellow"
+	echo -e "|_|_|\c"
+	print_button "_" 1 "yellow"
+	echo "|_|_|"
+
+	tput cup 17 36
+	echo -e "|_|_|_|\c"
+	print_button "_|_" 3 "yellow"
+	echo "|_|_|_|"
+	
+	tput cup 18 36
+	echo -e "|_|_|_|\c"
+	print_button "_|_" 3 "yellow"
+	echo "|_|_|_|"
+	
+	tput cup 19 36
+	echo -e "|_|_|\c"
+	print_button "_" 1 "yellow"
+	echo -e "|_|_|\c"
+	print_button "_" 1 "yellow"
+	echo "|_|_|"
+	
+	tput cup 20 36
+	echo -e "|_|\c"
+	print_button "_" 1 "yellow"
+	echo -e "|_|_|_|_|\c"
+	print_button "_" 1 "yellow"
+	echo "|_|"
+
+	tput cup 21 36
+	echo '|_|_|_|_|_|_|_|_|'
+}
+
+map_select_menu()
+{
+	map_template_1
+	map_template_2
+
+	case $1 in
+	0)
+		echo -e "\n  \c"
+		print_button "MAP1" 12 "red"
+		echo -e "                        \c"
+		print_button "MAP2" 12 "blue"
+		echo -e "\n";;
+	1)
+		echo -e "\n  \c"
+		print_button "MAP1" 12 "blue"
+		echo -e "                        \c"
+		print_button "MAP2" 12 "red"
+		echo -e "\n";;
+	*)
+		echo -e "\n  \c"
+		print_button "MAP1" 12 "blue"
+		echo -e "                        \c"
+		print_button "MAP2" 12 "blue"
+		echo -e "\n";;
+	esac
+}
+map_select_page()
+{
+	clear
+	highlight=0
+	map_select_title
+	map_select_menu
+
+	while true
+	do
+		user_input
+		clear
+		map_select_title
+
+		case $highlight in
+			0)  #  MAP1
+				if [ $key = "ENTER" ]
+				then
+					echo "map1 selected"
+				elif [ $key = "C" ]
+				then
+					highlight=1
+				else
+					highlight=0
+				fi;;
+			1)  #  MAP2
+				if [ $key = "ENTER" ]
+				then
+					echo "map2 selected"
+				elif [ $key = "D" ]
+				then
+					highlight=0
+				fi;;
+		esac
+
+		map_select_menu $highlight
+	done
+}
+
+ingame_template_1()
+{
+	echo ' _______________________________ '
+	echo '|   |   |   |   |   |   |   |   |'
+	echo '|___|___|___|___|___|___|___|___|'
+	echo '|   |   |   |   |   |   |   |   |'
+	echo '|___|___|___|___|___|___|___|___|'
+	echo '|   |   |   |   |   |   |   |   |'
+	echo '|___|___|___|___|___|___|___|___|'
+	echo '|   |   |   |   |   |   |   |   |'
+	echo '|___|___|___|___|___|___|___|___|'
+	echo '|   |   |   |   |   |   |   |   |'
+	echo '|___|___|___|___|___|___|___|___|'
+	echo '|   |   |   |   |   |   |   |   |'
+	echo '|___|___|___|___|___|___|___|___|'
+	echo '|   |   |   |   |   |   |   |   |'
+	echo '|___|___|___|___|___|___|___|___|'
+	echo '|   |   |   |   |   |   |   |   |'
+	echo '|___|___|___|___|___|___|___|___|'
 }
 
 main()
@@ -979,7 +1213,8 @@ main()
 	done
 }
 
-lobby_page
+#lobby_page
+map_select_page
 
 #  start main function
-main
+#main

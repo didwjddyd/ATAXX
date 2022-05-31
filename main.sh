@@ -9,6 +9,8 @@ islogin2="true"  #  check player2 logs in successfully
 idp1="comso1"  #  use for show player1's id
 idp2="comso2"  #  use for show player2's id
 player=0
+scorep1=0  #  score of player1
+scorep2=0  #  score of player2
 
 main_title()
 {
@@ -1092,25 +1094,43 @@ map_select_page()
 	done
 }
 
+ingame_title()
+{
+	echo '           _  _____  _    __  ____  __'
+	echo '          / \|_   _|/ \   \ \/ /\ \/ /'
+	echo '         / _ \ | | / _ \   \  /  \  / '
+	echo '        / ___ \| |/ ___ \  /  \  /  \ '
+	echo '       /_/   \_\_/_/   \_\/_/\_\/_/\_\'
+}
+
 ingame_template_1()
 {
-	echo ' _______________________________ '
-	echo '|   |   |   |   |   |   |   |   |'
-	echo '|___|___|___|___|___|___|___|___|'
-	echo '|   |   |   |   |   |   |   |   |'
-	echo '|___|___|___|___|___|___|___|___|'
-	echo '|   |   |   |   |   |   |   |   |'
-	echo '|___|___|___|___|___|___|___|___|'
-	echo '|   |   |   |   |   |   |   |   |'
-	echo '|___|___|___|___|___|___|___|___|'
-	echo '|   |   |   |   |   |   |   |   |'
-	echo '|___|___|___|___|___|___|___|___|'
-	echo '|   |   |   |   |   |   |   |   |'
-	echo '|___|___|___|___|___|___|___|___|'
-	echo '|   |   |   |   |   |   |   |   |'
-	echo '|___|___|___|___|___|___|___|___|'
-	echo '|   |   |   |   |   |   |   |   |'
-	echo '|___|___|___|___|___|___|___|___|'
+	echo '       _______________________________ '
+	echo '      |   |   |   |   |   |   |   |   |'
+	echo '      |___|___|___|___|___|___|___|___|'
+	echo '      |   |   |   |   |   |   |   |   |'
+	echo '      |___|___|___|___|___|___|___|___|'
+	echo '      |   |   |   |   |   |   |   |   |'
+	echo '      |___|___|___|___|___|___|___|___|'
+	echo '      |   |   |   |   |   |   |   |   |'
+	echo '      |___|___|___|___|___|___|___|___|'
+	echo '      |   |   |   |   |   |   |   |   |'
+	echo '      |___|___|___|___|___|___|___|___|'
+	echo '      |   |   |   |   |   |   |   |   |'
+	echo '      |___|___|___|___|___|___|___|___|'
+	echo '      |   |   |   |   |   |   |   |   |'
+	echo '      |___|___|___|___|___|___|___|___|'
+	echo '      |   |   |   |   |   |   |   |   |'
+	echo '      |___|___|___|___|___|___|___|___|'
+}
+
+ingame_page_1()
+{
+	ingame_title
+	echo -e "\n"
+	ingame_template_1
+	echo -e "\n"
+	echo "1P : $scorep1                                 2P : $scorep2"
 }
 
 main()
@@ -1214,7 +1234,8 @@ main()
 }
 
 #lobby_page
-map_select_page
+#map_select_page
+ingame_page_1
 
 #  start main function
 #main

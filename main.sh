@@ -11,6 +11,8 @@ idp2="comso2"  #  use for show player2's id
 player=0
 scorep1=0  #  score of player1
 scorep2=0  #  score of player2
+x=8
+y=8
 
 main_title()
 {
@@ -1104,129 +1106,96 @@ ingame_title()
 	echo '       /_/   \_\_/_/   \_\/_/\_\/_/\_\'
 }
 
-ingame_cursor_1()
+ingame_board()
 {
-	number=$1
-
-	case $number in
-		0)
-			echo -e "      |\c"
-			print_button "   " 3 "white"
-			echo "|   |   |   |   |   |   |   |"
-			echo -e "      |\c"
-			print_button "___" 3 "white"
-			echo "|___|___|___|___|___|___|___|";;
-		1)
-			echo -e "      |   |\c"
-			print_button "   " 3 "white"
-			echo "|   |   |   |   |   |   |"
-			echo -e "      |___|\c"
-			print_button "___" 3 "white"
-			echo "|___|___|___|___|___|___|";;
-		2)
-			echo -e "      |   |   |\c"
-			print_button "   " 3 "white"
-			echo "|   |   |   |   |   |"
-			echo -e "      |___|___|\c"
-			print_button "___" 3 "white"
-			echo "|___|___|___|___|___|";;
-		3)
-			echo -e "      |   |   |   |\c"
-			print_button "   " 3 "white"
-			echo "|   |   |   |   |"
-			echo -e "      |___|___|___|\c"
-			print_button "___" 3 "white"
-			echo "|___|___|___|___|";;
-		4)
-			echo -e "      |   |   |   |   |\c"
-			print_button "   " 3 "white"
-			echo "|   |   |   |"
-			echo -e "      |___|___|___|___|\c"
-			print_button "___" 3 "white"
-			echo "|___|___|___|";;
-		5)
-			echo -e "      |   |   |   |   |   |\c"
-			print_button "   " 3 "white"
-			echo "|   |   |"
-			echo -e "      |___|___|___|___|___|\c"
-			print_button "___" 3 "white"
-			echo "|___|___|";;
-		6)
-			echo -e "      |   |   |   |   |   |   |\c"
-			print_button "   " 3 "white"
-			echo "|   |"
-			echo -e "      |___|___|___|___|___|___|\c"
-			print_button "___" 3 "white"
-			echo "|___|";;
-		7)
-			echo -e "      |   |   |   |   |   |   |   |\c"
-			print_button "   " 3 "white"
-			echo "|"
-			echo -e "      |___|___|___|___|___|___|___|\c"
-			print_button "___" 3 "white"
-			echo "|";;
-		*)
-			echo "      |   |   |   |   |   |   |   |   |"
-			echo "      |___|___|___|___|___|___|___|___|";;
-	esac
-}
-
-ingame_template_1()
-{
-#	echo '       _______________________________ '
-#	echo '      |   |   |   |   |   |   |   |   |'
-#	echo '      |___|___|___|___|___|___|___|___|'
-#	echo '      |   |   |   |   |   |   |   |   |'
-#	echo '      |___|___|___|___|___|___|___|___|'
-#	echo '      |   |   |   |   |   |   |   |   |'
-#	echo '      |___|___|___|___|___|___|___|___|'
-#	echo '      |   |   |   |   |   |   |   |   |'
-#	echo '      |___|___|___|___|___|___|___|___|'
-#	echo '      |   |   |   |   |   |   |   |   |'
-#	echo '      |___|___|___|___|___|___|___|___|'
-#	echo '      |   |   |   |   |   |   |   |   |'
-#	echo '      |___|___|___|___|___|___|___|___|'
-#	echo '      |   |   |   |   |   |   |   |   |'
-#	echo '      |___|___|___|___|___|___|___|___|'
-#	echo '      |   |   |   |   |   |   |   |   |'
-#	echo '      |___|___|___|___|___|___|___|___|'
-
-
 	echo "       _______________________________ "
-	
-	case $# in
-		0)
-			for ((i=0; i!=8; ++i))
-			do
-				ingame_cursor_1
-			done;;
-		*)
-			for ((j=0; j<8; ++j))
-			do
-				if [ $j -eq $2 ]
-				then
-					ingame_cursor_1 $1
-				else
-					ingame_cursor_1
-				fi
-			done;;
-	esac
+
+	for ((yy=0; yy!=8; ++yy))
+	do
+		echo -e "      |\c"
+
+		for ((xx=0; xx!=8; ++xx))
+		do
+			if [ $yy -eq $y ] && [ $xx -eq $x ]
+			then
+				print_button "   " 3 "white"
+			else
+				case ${cellColor[`expr 8 \* $yy + $xx`]} in
+				0) print_button "   " 3 "blue";;
+				1) print_button "   " 3 "yellow";;
+				*) echo -e "   \c";;
+				esac
+			fi
+
+			echo -e "|\c"
+		done
+
+		echo -e "\n      |\c"
+
+		for ((xx=0; xx!=8; ++xx))
+		do
+			if [ $yy -eq $y ] && [ $xx -eq $x ]
+			then
+				print_button "___" 3 "white"
+			else
+				case ${cellColor[`expr 8 \* $yy + $xx`]} in
+				0) print_button "___" 3 "blue";;
+				1) print_button "___" 3 "yellow";;
+				*) echo -e "___\c";;
+				esac
+			fi
+
+			echo -e "|\c"
+		done
+
+		echo
+	done
 }
 
 ingame_page_1()
 {
-	x=7
-	y=7
 	clear
 	ingame_title
 	echo -e "\n"
-	ingame_template_1
+	ingame_board
 	echo -e "\n"
 	echo "1P : $scorep1                                 2P : $scorep2"
 
+	x=7
+	y=7
 	while true
 	do
-
+		user_input
+		clear
+		ingame_title
+		echo -e "\n"
+		
+		if [ $key = "ENTER" ]
+		then
+			index=`expr 8 \* $y + $x`
+			case ${cellColor[$index]} in
+			0 | 1);;
+			*)
+				cellColor[$index]=0
+				scorep1=`expr $scorep1 + 1`;;
+			esac
+		elif [ $key = "A" ] && [ $y -gt 0 ]
+		then
+			y=`expr $y - 1`
+		elif [ $key = "B" ] && [ $y -lt 7 ]
+		then
+			y=`expr $y + 1`
+		elif [ $key = "C" ] && [ $x -lt 7 ]
+		then
+			x=`expr $x + 1`
+		elif [ $key = "D" ] && [ $x -gt 0 ]
+		then
+			x=`expr $x - 1`
+		fi
+		
+		ingame_board
+		echo -e "\n"
+		echo "1P : $scorep1                                 2P : $scorep2"
 	done
 }
 

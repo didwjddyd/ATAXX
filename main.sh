@@ -1056,6 +1056,7 @@ map_select_menu()
 		echo -e "\n";;
 	esac
 }
+
 map_select_page()
 {
 	clear
@@ -1103,34 +1104,130 @@ ingame_title()
 	echo '       /_/   \_\_/_/   \_\/_/\_\/_/\_\'
 }
 
+ingame_cursor_1()
+{
+	number=$1
+
+	case $number in
+		0)
+			echo -e "      |\c"
+			print_button "   " 3 "white"
+			echo "|   |   |   |   |   |   |   |"
+			echo -e "      |\c"
+			print_button "___" 3 "white"
+			echo "|___|___|___|___|___|___|___|";;
+		1)
+			echo -e "      |   |\c"
+			print_button "   " 3 "white"
+			echo "|   |   |   |   |   |   |"
+			echo -e "      |___|\c"
+			print_button "___" 3 "white"
+			echo "|___|___|___|___|___|___|";;
+		2)
+			echo -e "      |   |   |\c"
+			print_button "   " 3 "white"
+			echo "|   |   |   |   |   |"
+			echo -e "      |___|___|\c"
+			print_button "___" 3 "white"
+			echo "|___|___|___|___|___|";;
+		3)
+			echo -e "      |   |   |   |\c"
+			print_button "   " 3 "white"
+			echo "|   |   |   |   |"
+			echo -e "      |___|___|___|\c"
+			print_button "___" 3 "white"
+			echo "|___|___|___|___|";;
+		4)
+			echo -e "      |   |   |   |   |\c"
+			print_button "   " 3 "white"
+			echo "|   |   |   |"
+			echo -e "      |___|___|___|___|\c"
+			print_button "___" 3 "white"
+			echo "|___|___|___|";;
+		5)
+			echo -e "      |   |   |   |   |   |\c"
+			print_button "   " 3 "white"
+			echo "|   |   |"
+			echo -e "      |___|___|___|___|___|\c"
+			print_button "___" 3 "white"
+			echo "|___|___|";;
+		6)
+			echo -e "      |   |   |   |   |   |   |\c"
+			print_button "   " 3 "white"
+			echo "|   |"
+			echo -e "      |___|___|___|___|___|___|\c"
+			print_button "___" 3 "white"
+			echo "|___|";;
+		7)
+			echo -e "      |   |   |   |   |   |   |   |\c"
+			print_button "   " 3 "white"
+			echo "|"
+			echo -e "      |___|___|___|___|___|___|___|\c"
+			print_button "___" 3 "white"
+			echo "|";;
+		*)
+			echo "      |   |   |   |   |   |   |   |   |"
+			echo "      |___|___|___|___|___|___|___|___|";;
+	esac
+}
+
 ingame_template_1()
 {
-	echo '       _______________________________ '
-	echo '      |   |   |   |   |   |   |   |   |'
-	echo '      |___|___|___|___|___|___|___|___|'
-	echo '      |   |   |   |   |   |   |   |   |'
-	echo '      |___|___|___|___|___|___|___|___|'
-	echo '      |   |   |   |   |   |   |   |   |'
-	echo '      |___|___|___|___|___|___|___|___|'
-	echo '      |   |   |   |   |   |   |   |   |'
-	echo '      |___|___|___|___|___|___|___|___|'
-	echo '      |   |   |   |   |   |   |   |   |'
-	echo '      |___|___|___|___|___|___|___|___|'
-	echo '      |   |   |   |   |   |   |   |   |'
-	echo '      |___|___|___|___|___|___|___|___|'
-	echo '      |   |   |   |   |   |   |   |   |'
-	echo '      |___|___|___|___|___|___|___|___|'
-	echo '      |   |   |   |   |   |   |   |   |'
-	echo '      |___|___|___|___|___|___|___|___|'
+#	echo '       _______________________________ '
+#	echo '      |   |   |   |   |   |   |   |   |'
+#	echo '      |___|___|___|___|___|___|___|___|'
+#	echo '      |   |   |   |   |   |   |   |   |'
+#	echo '      |___|___|___|___|___|___|___|___|'
+#	echo '      |   |   |   |   |   |   |   |   |'
+#	echo '      |___|___|___|___|___|___|___|___|'
+#	echo '      |   |   |   |   |   |   |   |   |'
+#	echo '      |___|___|___|___|___|___|___|___|'
+#	echo '      |   |   |   |   |   |   |   |   |'
+#	echo '      |___|___|___|___|___|___|___|___|'
+#	echo '      |   |   |   |   |   |   |   |   |'
+#	echo '      |___|___|___|___|___|___|___|___|'
+#	echo '      |   |   |   |   |   |   |   |   |'
+#	echo '      |___|___|___|___|___|___|___|___|'
+#	echo '      |   |   |   |   |   |   |   |   |'
+#	echo '      |___|___|___|___|___|___|___|___|'
+
+
+	echo "       _______________________________ "
+	
+	case $# in
+		0)
+			for ((i=0; i!=8; ++i))
+			do
+				ingame_cursor_1
+			done;;
+		*)
+			for ((j=0; j<8; ++j))
+			do
+				if [ $j -eq $2 ]
+				then
+					ingame_cursor_1 $1
+				else
+					ingame_cursor_1
+				fi
+			done;;
+	esac
 }
 
 ingame_page_1()
 {
+	x=7
+	y=7
+	clear
 	ingame_title
 	echo -e "\n"
 	ingame_template_1
 	echo -e "\n"
 	echo "1P : $scorep1                                 2P : $scorep2"
+
+	while true
+	do
+
+	done
 }
 
 main()

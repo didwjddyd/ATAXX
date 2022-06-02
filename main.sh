@@ -732,7 +732,7 @@ log_in()
 					main
 				fi
 			fi
-			join_menu 2
+			login_menu 2
 			exit 0;;
 	esac
 }

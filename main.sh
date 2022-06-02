@@ -4,10 +4,10 @@ key="A"  #  to return arrow or enter key from user_input()
 highlight=0  #  number of button which is highlighted
 id="ID"  #  use for show user input id
 pw="PW"  #  use for show user input pw
-islogin1="true"  #  check player1 logs in successfully
-islogin2="true"  #  check player2 logs in successfully
-idp1="comso1"  #  use for show player1's id
-idp2="comso2"  #  use for show player2's id
+islogin1="false"  #  check player1 logs in successfully
+islogin2="false"  #  check player2 logs in successfully
+idp1="1P LOGIN"  #  use for show player1's id
+idp2="2P LOGIN"  #  use for show player2's id
 player=0
 scorep1=0  #  score of player1
 scorep2=0  #  score of player2
@@ -728,7 +728,7 @@ log_in()
 					idp2="$1"
 					id="ID"
 					pw="PW"
-					islogin="true"
+					islogin2="true"
 					main
 				fi
 			fi
@@ -918,11 +918,6 @@ lobby_page()
 	lobby_title
 	lobby_menu
 	
-	if [ $islogin1 = "false" ] || [ $islogin2 = "false" ]
-	then
-		exit 0
-	fi
-
 	while true
 	do
 		user_input
@@ -1076,7 +1071,7 @@ map_select_page()
 			0)  #  MAP1
 				if [ $key = "ENTER" ]
 				then
-					echo "map1 selected"
+					ingame_page_1
 				elif [ $key = "C" ]
 				then
 					highlight=1
@@ -1086,7 +1081,7 @@ map_select_page()
 			1)  #  MAP2
 				if [ $key = "ENTER" ]
 				then
-					echo "map2 selected"
+					ingame_page_2
 				elif [ $key = "D" ]
 				then
 					highlight=0
@@ -1116,17 +1111,20 @@ ingame_board()
 
 		for ((xx=0; xx!=8; ++xx))
 		do
-			if [ $yy -eq $y ] && [ $xx -eq $x ]
-			then
-				print_button "   " 3 "white"
-			else
-				case ${cellColor[`expr 8 \* $yy + $xx`]} in
-				0) print_button "   " 3 "blue";;
-				1) print_button "   " 3 "yellow";;
-				*) echo -e "   \c";;
-				esac
-			fi
+			index=`expr 8 \* $yy + $xx`
 
+			case ${cellColor[$index]} in
+			0) print_button "   " 3 "blue";;
+			1) print_button "   " 3 "yellow";;
+			*) 
+				if [ $yy -eq $y ] && [ $xx -eq $x ]
+				then
+					print_button "   " 3 "white"
+				else
+					echo -e "   \c"
+				fi;;
+			esac
+			
 			echo -e "|\c"
 		done
 
@@ -1134,16 +1132,19 @@ ingame_board()
 
 		for ((xx=0; xx!=8; ++xx))
 		do
-			if [ $yy -eq $y ] && [ $xx -eq $x ]
-			then
-				print_button "___" 3 "white"
-			else
-				case ${cellColor[`expr 8 \* $yy + $xx`]} in
-				0) print_button "___" 3 "blue";;
-				1) print_button "___" 3 "yellow";;
-				*) echo -e "___\c";;
-				esac
-			fi
+			index=`expr 8 \* $yy + $xx`
+
+			case ${cellColor[$index]} in
+			0) print_button "___" 3 "blue";;
+			1) print_button "___" 3 "yellow";;
+			*) 
+				if [ $yy -eq $y ] && [ $xx -eq $x ]
+				then
+					print_button "___" 3 "white"
+				else
+					echo -e "___\c"
+				fi;;
+			esac
 
 			echo -e "|\c"
 		done
@@ -1169,7 +1170,67 @@ ingame_page_1()
 		clear
 		ingame_title
 		echo -e "\n"
-		
+
+		if [ $key = "ENTER" ]
+		then
+			index=`expr 8 \* $y + $x`
+			case ${cellColor[$index]} in
+			0 | 1);;
+			*)
+				cellColor[$index]=0
+				scorep1=`expr $scorep1 + 1`
+			esac
+		elif [ $key = "A" ] && [ $y -gt 0 ]
+		then
+			y=`expr $y - 1`
+		elif [ $key = "B" ] && [ $y -lt 7 ]
+		then
+			y=`expr $y + 1`
+		elif [ $key = "C" ] && [ $x -lt 7 ]
+		then
+			x=`expr $x + 1`
+		elif [ $key = "D" ] && [ $x -gt 0 ]
+		then
+			x=`expr $x - 1`
+		fi
+
+		ingame_board
+		echo -e "\n"
+		echo "1P : $scorep1                                 2P : $scorep2"
+	done
+}
+
+ingame_page_2()
+{
+	cellColor[9]=1
+	cellColor[14]=1
+	cellColor[18]=1
+	cellColor[21]=1
+	cellColor[27]=1
+	cellColor[28]=1
+	cellColor[35]=1
+	cellColor[36]=1
+	cellColor[42]=1
+	cellColor[45]=1
+	cellColor[49]=1
+	cellColor[54]=1
+
+	clear
+	ingame_title
+	echo -e "\n"
+	ingame_board
+	echo -e "\n"
+	echo "1P : $scorep1                                 2P : $scorep2"
+
+	x=7
+	y=7
+	while true
+	do
+		user_input
+		clear
+		ingame_title
+		echo -e "\n"
+
 		if [ $key = "ENTER" ]
 		then
 			index=`expr 8 \* $y + $x`
@@ -1192,7 +1253,7 @@ ingame_page_1()
 		then
 			x=`expr $x - 1`
 		fi
-		
+
 		ingame_board
 		echo -e "\n"
 		echo "1P : $scorep1                                 2P : $scorep2"
@@ -1299,9 +1360,5 @@ main()
 	done
 }
 
-#lobby_page
-#map_select_page
-ingame_page_1
-
 #  start main function
-#main
+main
